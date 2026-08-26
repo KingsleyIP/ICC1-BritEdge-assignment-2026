@@ -99,6 +99,7 @@ def new_job():
         title = request.form.get('title')
         description = request.form.get('description')
         document = request.files.get('document')
+        print(f"Document received: {document.filename if document else 'NONE'}", flush=True)
 
         if not title or not description:
             flash('Title and Description are required for the job.', 'danger')
@@ -109,10 +110,12 @@ def new_job():
 
             if document and document.filename:
                 connection_string = os.environ.get("AZURE_STORAGE_CONNECTION_STRING")
+               print(f"Storage connection configured: {bool(connection_string)}", flush=True)
                 container_name = os.environ.get(
                     "AZURE_STORAGE_CONTAINER",
                     "job-documents"
                 )
+                print(f"Storage container: {container_name}", flush=True)
 
                 if connection_string:
                     blob_service = BlobServiceClient.from_connection_string(
