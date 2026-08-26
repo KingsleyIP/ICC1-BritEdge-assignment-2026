@@ -131,8 +131,9 @@ def new_job():
                         overwrite=True
                     )
 
-    flash('Your job has been created!', 'success')
-    return redirect(url_for('home'))
+            flash('Your job has been created!', 'success')
+            return redirect(url_for('home'))
+        
         except Exception as e:
             data.rollback()
             flash(f'An error occurred while creating the job: {e}', 'danger')
