@@ -2,6 +2,10 @@
 from flask import abort, flash, redirect, render_template, request, url_for
 from flask_login import current_user, login_required, login_user, logout_user
 
+import os
+from azure.storage.blob import BlobServiceClient
+from werkzeug.utils import secure_filename
+
 import data
 from application import app
 
@@ -94,6 +98,7 @@ def new_job():
     if request.method == 'POST':
         title = request.form.get('title')
         description = request.form.get('description')
+        document = request.files.get('document')
 
         if not title or not description:
             flash('Title and Description are required for the job.', 'danger')
@@ -101,8 +106,33 @@ def new_job():
 
         try:
             data.create_job(title, description, current_user)
-            flash('Your job has been created!', 'success')
-            return redirect(url_for('home'))
+
+            if document and document.filename:
+                connection_string = os.environ.get("AZURE_STORAGE_CONNECTION_STRING")
+                container_name = os.environ.get(
+                    "AZURE_STORAGE_CONTAINER",
+                    "job-documents"
+                )
+
+        if connection_string:
+            blob_service = BlobServiceClient.from_connection_string(
+                connection_string
+            )
+
+            filename = secure_filename(document.filename)
+
+            blob_client = blob_service.get_blob_client(
+                container=container_name,
+                blob=f"{current_user.id}/{filename}"
+            )
+
+            blob_client.upload_blob(
+                document.stream,
+                overwrite=True
+            )
+
+    flash('Your job has been created!', 'success')
+    return redirect(url_for('home'))
         except Exception as e:
             data.rollback()
             flash(f'An error occurred while creating the job: {e}', 'danger')
