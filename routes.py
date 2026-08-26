@@ -114,22 +114,22 @@ def new_job():
                     "job-documents"
                 )
 
-        if connection_string:
-            blob_service = BlobServiceClient.from_connection_string(
-                connection_string
-            )
+                if connection_string:
+                    blob_service = BlobServiceClient.from_connection_string(
+                        connection_string
+                    )
 
-            filename = secure_filename(document.filename)
+                    filename = secure_filename(document.filename)
 
-            blob_client = blob_service.get_blob_client(
-                container=container_name,
-                blob=f"{current_user.id}/{filename}"
-            )
+                    blob_client = blob_service.get_blob_client(
+                        container=container_name,
+                        blob=f"{current_user.id}/{filename}"
+                    )
 
-            blob_client.upload_blob(
-                document.stream,
-                overwrite=True
-            )
+                    blob_client.upload_blob(
+                        document.stream,
+                        overwrite=True
+                    )
 
     flash('Your job has been created!', 'success')
     return redirect(url_for('home'))
