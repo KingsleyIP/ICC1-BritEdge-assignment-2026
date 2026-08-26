@@ -110,12 +110,17 @@ def new_job():
 
             if document and document.filename:
                 connection_string = os.environ.get("AZURE_STORAGE_CONNECTION_STRING")
-               print(f"Storage connection configured: {bool(connection_string)}", flush=True)
+               print(
+                f"Storage connection configured: {bool(connection_string)}",
+                flush=True
+            )
                 container_name = os.environ.get(
                     "AZURE_STORAGE_CONTAINER",
                     "job-documents"
                 )
-                print(f"Storage container: {container_name}", flush=True)
+                print(
+                    f"Storage container: {container_name}",
+                    flush=True)
 
                 if connection_string:
                     blob_service = BlobServiceClient.from_connection_string(
