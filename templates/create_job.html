@@ -2,7 +2,7 @@
 {% block content %}
 <div class="max-w-lg mx-auto bg-white p-8 rounded-lg shadow-md">
     <h1 class="text-2xl font-bold mb-6">{{ title or 'Create Job' }}</h1>
-    <form method="POST">
+        <form method="POST" enctype="multipart/form-data">    
         <div class="mb-4">
             <label for="title" class="block text-gray-700 font-semibold mb-2">Title</label>
             <input type="text" id="title" name="title" class="form-input" value="{{ job.title if job else '' }}" required>
@@ -10,6 +10,10 @@
         <div class="mb-4">
             <label for="description" class="block text-gray-700 font-semibold mb-2">Description</label>
             <textarea id="description" name="description" class="form-input" rows="5" required>{{ job.description if job else '' }}</textarea>
+        </div>
+        <div class="mb-4">
+            <label for="document" class="block text-gray-700 font-semibold mb-2">Job Document</label>
+            <input type="file" id="document" name="document" class="form-input">
         </div>
         {% if job %}
         <div class="mb-4 flex items-center">
